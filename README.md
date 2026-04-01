@@ -104,3 +104,43 @@ All submitted work reflects our team’s understanding. Any external code has be
 - Integrated by our team  
 
 Failure to disclose AI or external resources may be considered an academic integrity violation.
+
+---
+
+### UML Diagram
+
+Marketplace
+- users : vector<User>
+- listings : vector<Listing>
++ addUser()
++ addListing()
++ displayAllListings()
++ searchListings()
++ filterListings()
++ removeListing()
+
+User
+- username : string
+- passcode : string
+- currentListings : vector<Listing>
++ createAccount()
++ login()
++ addListing()
++ removeListing()
+
+Listing
+- name : string
+- description : string
+- category : string
+- price : double
+- condition : string
+- status : string
+- location : string
++ displayListing()
++ editDetails()
++ markSold()
+
+Relationships:
+- Marketplace contains many Users
+- Marketplace stores many Listings
+- User owns many Listings
