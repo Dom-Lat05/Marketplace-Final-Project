@@ -87,3 +87,22 @@ Users can mark items as sold or completely delete their listings.
 
 ### AI Tools
 #### ChatGPT:
+
+### External Resources
+1. https://cplusplus.com (used for C++ references and vectors)
+2. Stack Overflow
+<br>
+https://stackoverflow.com/questions
+3. QT (Used for GUI)
+<br>
+https://www.qt.io/development/qt-framework
+
+---
+
+### Collaboration Policy Statement
+All submitted work reflects our team’s understanding. Any external code has been:
+- Reviewed  
+- Modified as needed  
+- Integrated by our team  
+
+Failure to disclose AI or external resources may be considered an academic integrity violation.
