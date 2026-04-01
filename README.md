@@ -51,7 +51,7 @@ Users can mark items as sold or completely delete their listings.
 ## OOP Concepts Used
 
 ### Encapsulation
-= Each class (User, Listing, Marketplace) uses private attributes with public member functions to control access and not have data leaks
+- Each class (User, Listing, Marketplace) uses private attributes with public member functions to control access and not have data leaks
 
 ### Inheritance
 - Listing categories can be extended into categories for filters on search such as electronics and Furniture
