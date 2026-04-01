@@ -17,3 +17,6 @@ The program allows users to create accounts, post listings, search for products,
 - Let users add, edit, and remove listings
 - Let sellers mark items as sold
 - Create a GUI that is clean and simple
+
+## Features
+1. **Account Creation**
