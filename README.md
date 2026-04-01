@@ -16,16 +16,11 @@ The program allows users to create profiles, listings saved to their profile, se
 -C++ Complier (ex. Visual Studio 2022, CLion)
 -GUI framework used: Qt
 
-## Steps
+### Steps
 1. Clone the repository
 2. Open Project in your IDE
 3. Build the project
 4. Run the application
-
-## Project Description
-Online Marketplace is a simplified local buying and selling platform designed to be easy to use for people of all ages. Many users find larger platforms difficult to navigate or do not trust unfamiliar sellers and listings. This project focuses on creating a smaller, more straightforward marketplace for local users who want a simple experience.
-
-The program allows users to create accounts, post listings, search for products, edit listings, and mark items as sold. The project applies object-oriented programming concepts such as encapsulation, abstraction, inheritance, and polymorphism.
 
 ## Goals
 - Create a marketplace that is simple and user friendly
@@ -55,3 +50,8 @@ Sellers can update their listings whenver they need to.
 
 7. **Mark Sold/Remove Listings** <br>
 Users can mark items as sold or completely delete their listings.
+
+## Project Description
+Online Marketplace is a simplified local buying and selling platform designed to be easy to use for people of all ages. Many users find larger platforms difficult to navigate or do not trust unfamiliar sellers and listings. This project focuses on creating a smaller, more straightforward marketplace for local users who want a simple experience.
+
+The program allows users to create accounts, post listings, search for products, edit listings, and mark items as sold. The project applies object-oriented programming concepts such as encapsulation, abstraction, inheritance, and polymorphism.
