@@ -19,8 +19,8 @@ The program allows users to create accounts, post listings, search for products,
 - Create a GUI that is clean and simple
 
 ## Features
-1. **Account Creation**
+1. **Account Creation** <br>
 Users can create a personalized account with a username and passcode
 
-2. **Login System**
+2. **Login System** <br>
 Existing users can log into their account securely
