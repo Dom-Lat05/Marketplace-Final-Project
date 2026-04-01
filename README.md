@@ -83,18 +83,7 @@ Users can mark items as sold or completely delete their listings.
 
 ---
 
+## AI and External Resources Disclosure
 
-
-
-
-## Project Description
-Online Marketplace is a simplified local buying and selling platform designed to be easy to use for people of all ages. Many users find larger platforms difficult to navigate or do not trust unfamiliar sellers and listings. This project focuses on creating a smaller, more straightforward marketplace for local users who want a simple experience.
-
-The program allows users to create accounts, post listings, search for products, edit listings, and mark items as sold. The project applies object-oriented programming concepts such as encapsulation, abstraction, inheritance, and polymorphism.
-
-## Goals
-- Create a marketplace that is simple and user friendly
-- Allow for account creation
-- Let users add, edit, and remove listings
-- Let sellers mark items as sold
-- Create a GUI that is clean and simple
+### AI Tools
+#### ChatGPT:
