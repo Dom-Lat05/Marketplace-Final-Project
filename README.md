@@ -63,7 +63,20 @@ Users can mark items as sold or completely delete their listings.
 - The Marketplace class will have the User and Listings classes
 - The User class will have the different listings (relationship)
 
+---
 
+## Team Contributions
+ ### Dominic LaTorraca
+ - Project Design
+ - Implementation of Marketplace and Core Logic
+ - GUI concept design and implementation
+
+### Timothy Muehl
+- Listing Class implementation
+- Search and filter functionality
+- Editing and marking listings as sold
+
+---
 
 
 
