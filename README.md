@@ -10,13 +10,13 @@ The program allows users to create profiles, listings saved to their profile, se
   
 ---
 
-##How to Run
+## How to Run
 
-##Requirments
+## Requirments
 -C++ Complier (ex. Visual Studio 2022, CLion)
 -GUI framework used: Qt
 
-##Steps
+## Steps
 1. Clone the repository
 2. Open Project in your IDE
 3. Build the project
