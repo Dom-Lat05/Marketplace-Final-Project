@@ -76,6 +76,11 @@ Users can mark items as sold or completely delete their listings.
 - Search and filter functionality
 - Editing and marking listings as sold
 
+### Joao Olivo
+- User class implementation
+- Account System (Creation and login)
+- Input Validation
+
 ---
 
 
