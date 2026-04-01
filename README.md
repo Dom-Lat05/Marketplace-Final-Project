@@ -91,10 +91,8 @@ Users can mark items as sold or completely delete their listings.
 ### External Resources
 1. https://cplusplus.com (used for C++ references and vectors)
 2. Stack Overflow
-<br>
 https://stackoverflow.com/questions
 3. QT (Used for GUI)
-<br>
 https://www.qt.io/development/qt-framework
 
 ---
