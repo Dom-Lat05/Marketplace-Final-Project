@@ -20,7 +20,22 @@ The program allows users to create accounts, post listings, search for products,
 
 ## Features
 1. **Account Creation** <br>
-Users can create a personalized account with a username and passcode
+Users can create a personalized account with a username and passcode.
 
 2. **Login System** <br>
-Existing users can log into their account securely
+Existing users can log into their account securely.
+
+3. **Create Lisitings** <br>
+Users can post items for sale with details like name, description, condition, and price.
+
+4. **Search Listings** <br>
+Users can search for items by name or keyword.
+
+5. **Filter Listings** <br>
+Users can filter by category or condition.
+
+6. **Edit Listings** <br>
+Sellers can update their listings whenver they need to.
+
+7. **Mark Sold/Remove Listings** <br>
+Users can mark items as sold or completely delete their listings.
