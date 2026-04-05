@@ -1,1 +1,70 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include "listing.h"
+#include "user.h" 
 
+class Marketplace : public User {
+private:
+	std::vector<User> users;
+	std::vector<Listing> all_Listings; 
+
+public:
+	// Add user
+	void addUser(const User& user) {
+		users.push_back(user);
+	}
+
+	// Add listing
+	void addListing(const Listing& listing) {
+		all_Listings.push_back(listing);
+	}
+
+	// Display all listings
+	void displayAllListings() const {
+		std::cout << "All Listings in the Marketplace:\n";
+		for (const auto& listing : all_Listings) {
+			listing.display();
+			std::cout << "-------------------------\n";
+		}
+	}
+
+	// Search by Name
+	void searchListingsByName(const std::string& name) const {
+		bool found = false;
+		
+		std::cout << "Search Results for Name: " << name << "\n";
+		for (const auto& listing : all_Listings) {
+			if (listing.getName() == name) {
+				listing.display();
+				std::cout << "-------------------------\n";
+			}
+		}
+
+		if (all_Listings.empty()) {
+			std::cout << "No listings found with the name: " << name << "\n";
+		}
+
+		if (!found) {
+			std::cout << "No listings found with the name: " << name << "\n";
+		}
+	}
+	// Filter by Category
+	void filterListingsByCategory(const std::string& category) const {
+		bool found = false;
+		
+		std::cout << "Filter Results for Category: " << category << "\n";
+		for (const auto& listing : all_Listings) {
+			if (listing.getCategory() == category) {
+				listing.display();
+				std::cout << "-------------------------\n";
+			}
+		}
+		if (all_Listings.empty()) {
+			std::cout << "No listings found in the category: " << category << "\n";
+		}
+		if (!found) {
+			std::cout << "No listings found in the category: " << category << "\n";
+		}
+	}
+};
