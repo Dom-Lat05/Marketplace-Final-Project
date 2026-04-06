@@ -1,5 +1,6 @@
-#include <iostream>
-#include <vector>
+#ifndef LISTING_H
+#define LISTING_H
+
 #include <string>
 
 class Listing {
@@ -13,56 +14,24 @@ private:
     double price;
 
 public:
-	// Constructor
     Listing(const std::string& name, const std::string& description, const std::string& category,
-            const std::string& condition, const std::string& item_status, const std::string& location, double price)
-        : name(name), description(description), category(category), condition(condition),
-          item_status(item_status), location(location), price(price) {}
-    void display() const {
-        std::cout << "Name: " << name << "\n"
-                  << "Description: " << description << "\n"
-                  << "Category: " << category << "\n"
-                  << "Condition: " << condition << "\n"
-                  << "Item Status: " << item_status << "\n"
-                  << "Location: " << location << "\n"
-                  << "Price: $" << price << "\n";
-	}
+        const std::string& condition, const std::string& item_status,
+        const std::string& location, double price);
 
-    // Getters
-	std::string getName() const { return name; }
-	std::string getDescription() const { return description; }
-	std::string getCategory() const { return category; }
-	std::string getCondition() const { return condition; }
-	std::string getItemStatus() const { return item_status; }
-	std::string getLocation() const { return location; }
-	double getPrice() const { return price; }
-
-	// Display Listing Details
-    void displayDetails() const {
-        std::cout << "Listing Details:\n";
-        std::cout << "Name: " << name << "\n";
-        std::cout << "Description: " << description << "\n";
-        std::cout << "Category: " << category << "\n";
-        std::cout << "Condition: " << condition << "\n";
-        std::cout << "Item Status: " << item_status << "\n";
-        std::cout << "Location: " << location << "\n";
-        std::cout << "Price: $" << price << "\n";
-	}
-
-	// Update Listing Details
+    void display() const;
+    void displayDetails() const;
     void updateDetails(const std::string& new_description, const std::string& new_category,
-                       const std::string& new_condition, const std::string& new_item_status,
-                       const std::string& new_location, double new_price) {
-        description = new_description;
-        category = new_category;
-        condition = new_condition;
-        item_status = new_item_status;
-        location = new_location;
-        price = new_price;
-	}
+        const std::string& new_condition, const std::string& new_item_status,
+        const std::string& new_location, double new_price);
+    void markAsSold();
 
-	// Mark Item as Sold
-    void markAsSold() {
-        item_status = "Sold";
-	}
+    std::string getName() const;
+    std::string getDescription() const;
+    std::string getCategory() const;
+    double getPrice() const;
+    std::string getCondition() const;
+    std::string getStatus() const;
+    std::string getLocation() const;
 };
+
+#endif
