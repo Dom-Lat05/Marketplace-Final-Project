@@ -26,11 +26,20 @@ public:
 		my_Listings.push_back(listing);
 	}
 
+	// Remove a listing from the user's listings
+	void removeListing(const std::string& listing) {
+		my_Listings.erase(std::remove(my_Listings.begin(), my_Listings.end(), listing), my_Listings.end());
+	}
+
 	// Display user's listings
 	void displayMyListings() const {
 		std::cout << "\nListings for user: " << getUsername() << std::endl;
 		for (const auto& listing : my_Listings) {
 			std::cout << "- " << listing << "\n";
 		}
+	}
+
+	std::vector<std::string> getMyListings() const {
+		return my_Listings;
 	}
 };
