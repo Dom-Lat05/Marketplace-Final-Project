@@ -2,21 +2,21 @@
 #include "marketplaceSystem.h"
 
 int main() {
-	MarketplaceSystem marketplaceSystem;
+    MarketplaceSystem marketplaceSystem;
 
-	marketplaceSystem.loadData();
+    marketplaceSystem.loadData();
 
-	// Backend test
-	marketplaceSystem.createAccount("Dom", "1234");
-	marketplaceSystem.login("Dom", "1234");
+    // Backend test
+    marketplaceSystem.createUser("Dom", "1234");
+    marketplaceSystem.login("Dom", "1234");
 
-	marketplaceSystem.addListing("Bike", "A nice bike", "Sports", "Used", "New York", 100.0);
-	marketplaceSystem.addListing("Laptop", "A powerful laptop", "Electronics", "New", "San Francisco", 1200.0);
+    marketplaceSystem.addListing("Bike", "A nice bike", "Sports", "Used", "New York", 100.0);
+    marketplaceSystem.addListing("Laptop", "A powerful laptop", "Electronics", "New", "San Francisco", 1200.0);
 
-	std::cout << "Current User: " << marketplaceSystem.getCurrentUsername() << std::endl;
-	std::cout << "Total listings: " << marketplaceSystem.getAllListings().size() << std::endl;
+    std::cout << "Current User: " << marketplaceSystem.getCurrentUsername() << std::endl;
+    std::cout << "Total listings: " << marketplaceSystem.getAllListings().size() << std::endl;
 
-	marketplaceSystem.saveData();
+    marketplaceSystem.saveData();
 
-	return 0;
+    return 0;
 }
