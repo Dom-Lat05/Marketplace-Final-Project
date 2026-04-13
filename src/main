@@ -94,6 +94,16 @@ void filterListingsByPrice(MarketplaceSystem& system) {
     system.filterListingsByPrice(minPrice, maxPrice);
 }
 
+void sortListingsLowToHigh(MarketplaceSystem& system) {
+    std::cout << "\n===== SORTED LISTINGS: LOW TO HIGH =====\n";
+    system.sortListingsByPriceLowToHigh();
+}
+
+void sortListingsHighToLow(MarketplaceSystem& system) {
+    std::cout << "\n===== SORTED LISTINGS: HIGH TO LOW =====\n";
+    system.sortListingsByPriceHighToLow();
+}
+
 void createListing(MarketplaceSystem& system) {
     std::string name;
     std::string description;
@@ -128,8 +138,7 @@ void createListing(MarketplaceSystem& system) {
 
     if (system.addListing(name, description, category, condition, location, price)) {
         std::cout << "Listing created successfully.\n";
-    }
-    else {
+    } else {
         std::cout << "Failed to create listing.\n";
     }
 }
@@ -167,8 +176,7 @@ void markListingSold(MarketplaceSystem& system) {
 
     if (system.markListingAsSold(listingName)) {
         std::cout << "Listing marked as sold successfully.\n";
-    }
-    else {
+    } else {
         std::cout << "Could not mark listing as sold.\n";
     }
 }
@@ -185,8 +193,10 @@ void loggedInMenu(MarketplaceSystem& system) {
         std::cout << "4. Search Listings by Name\n";
         std::cout << "5. Filter Listings by Category\n";
         std::cout << "6. Filter Listings by Price\n";
-        std::cout << "7. Mark Listing as Sold\n";
-        std::cout << "8. Logout\n";
+        std::cout << "7. Sort Listings by Price (Low to High)\n";
+        std::cout << "8. Sort Listings by Price (High to Low)\n";
+        std::cout << "9. Mark Listing as Sold\n";
+        std::cout << "10. Logout\n";
         std::cout << "Enter your choice: ";
 
         while (!(std::cin >> choice)) {
@@ -222,11 +232,19 @@ void loggedInMenu(MarketplaceSystem& system) {
             pauseScreen();
             break;
         case 7:
+            sortListingsLowToHigh(system);
+            pauseScreen();
+            break;
+        case 8:
+            sortListingsHighToLow(system);
+            pauseScreen();
+            break;
+        case 9:
             markListingSold(system);
             system.saveData();
             pauseScreen();
             break;
-        case 8:
+        case 10:
             system.logout();
             system.saveData();
             std::cout << "Logged out successfully.\n";
@@ -253,7 +271,9 @@ int main() {
         std::cout << "4. Search Listings by Name\n";
         std::cout << "5. Filter Listings by Category\n";
         std::cout << "6. Filter Listings by Price\n";
-        std::cout << "7. Exit\n";
+        std::cout << "7. Sort Listings by Price (Low to High)\n";
+        std::cout << "8. Sort Listings by Price (High to Low)\n";
+        std::cout << "9. Exit\n";
         std::cout << "Enter your choice: ";
 
         while (!(std::cin >> choice)) {
@@ -277,8 +297,7 @@ int main() {
             if (marketplaceSystem.createUser(username, password)) {
                 marketplaceSystem.saveData();
                 std::cout << "Account created successfully.\n";
-            }
-            else {
+            } else {
                 std::cout << "Could not create account.\n";
             }
 
@@ -298,8 +317,7 @@ int main() {
 
             if (marketplaceSystem.login(username, password)) {
                 loggedInMenu(marketplaceSystem);
-            }
-            else {
+            } else {
                 std::cout << "Login failed.\n";
                 pauseScreen();
             }
@@ -322,6 +340,14 @@ int main() {
             pauseScreen();
             break;
         case 7:
+            sortListingsLowToHigh(marketplaceSystem);
+            pauseScreen();
+            break;
+        case 8:
+            sortListingsHighToLow(marketplaceSystem);
+            pauseScreen();
+            break;
+        case 9:
             marketplaceSystem.saveData();
             std::cout << "Data saved. Goodbye.\n";
             running = false;
