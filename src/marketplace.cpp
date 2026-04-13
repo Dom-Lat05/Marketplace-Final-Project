@@ -151,23 +151,22 @@ void MarketplaceSystem::saveData() {
 
     if (userFile.is_open()) {
         for (const auto& user : users) {
-            userFile << user.getUsername() << " " << user.getPassword() << "\n";
+            userFile << user.getUsername() << "|"
+                << user.getPassword() << "\n";
         }
-
         userFile.close();
     }
 
     if (listingFile.is_open()) {
         for (const auto& listing : marketplace.getAllListings()) {
-            listingFile << listing.getName() << " "
-                        << listing.getDescription() << " "
-                        << listing.getCategory() << " "
-                        << listing.getCondition() << " "
-                        << listing.getStatus() << " "
-                        << listing.getLocation() << " "
-                        << listing.getPrice() << "\n";
+            listingFile << listing.getName() << "|"
+                << listing.getDescription() << "|"
+                << listing.getCategory() << "|"
+                << listing.getCondition() << "|"
+                << listing.getStatus() << "|"
+                << listing.getLocation() << "|"
+                << listing.getPrice() << "\n";
         }
-
         listingFile.close();
     }
 }
