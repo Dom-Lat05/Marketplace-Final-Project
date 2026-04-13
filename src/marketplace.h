@@ -22,6 +22,7 @@ public:
 
     void searchListingsByName(const std::string& name) const;
     void filterListingsByCategory(const std::string& category) const;
+    void filterListingsByPrice(double minPrice, double maxPrice) const;
     void removeListing(const std::string& listingName);
 };
 
