@@ -74,6 +74,26 @@ void filterListingsByCategory(MarketplaceSystem& system) {
     }
 }
 
+void filterListingsByPrice(MarketplaceSystem& system) {
+    double minPrice, maxPrice;
+
+    std::cout << "\nEnter minimum price: ";
+    while (!(std::cin >> minPrice) || minPrice < 0) {
+        std::cout << "Invalid minimum price. Enter a valid number: ";
+        clearInput();
+    }
+
+    std::cout << "Enter maximum price: ";
+    while (!(std::cin >> maxPrice) || maxPrice < 0 || maxPrice < minPrice) {
+        std::cout << "Invalid maximum price. Enter a valid number: ";
+        clearInput();
+    }
+    clearInput();
+
+    std::cout << "\n===== PRICE FILTER RESULTS =====\n";
+    system.filterListingsByPrice(minPrice, maxPrice);
+}
+
 void createListing(MarketplaceSystem& system) {
     std::string name;
     std::string description;
@@ -164,8 +184,9 @@ void loggedInMenu(MarketplaceSystem& system) {
         std::cout << "3. View All Listings\n";
         std::cout << "4. Search Listings by Name\n";
         std::cout << "5. Filter Listings by Category\n";
-        std::cout << "6. Mark Listing as Sold\n";
-        std::cout << "7. Logout\n";
+        std::cout << "6. Filter Listings by Price\n";
+        std::cout << "7. Mark Listing as Sold\n";
+        std::cout << "8. Logout\n";
         std::cout << "Enter your choice: ";
 
         while (!(std::cin >> choice)) {
@@ -197,11 +218,15 @@ void loggedInMenu(MarketplaceSystem& system) {
             pauseScreen();
             break;
         case 6:
+            filterListingsByPrice(system);
+            pauseScreen();
+            break;
+        case 7:
             markListingSold(system);
             system.saveData();
             pauseScreen();
             break;
-        case 7:
+        case 8:
             system.logout();
             system.saveData();
             std::cout << "Logged out successfully.\n";
@@ -227,7 +252,8 @@ int main() {
         std::cout << "3. View All Listings\n";
         std::cout << "4. Search Listings by Name\n";
         std::cout << "5. Filter Listings by Category\n";
-        std::cout << "6. Exit\n";
+        std::cout << "6. Filter Listings by Price\n";
+        std::cout << "7. Exit\n";
         std::cout << "Enter your choice: ";
 
         while (!(std::cin >> choice)) {
@@ -292,6 +318,10 @@ int main() {
             pauseScreen();
             break;
         case 6:
+            filterListingsByPrice(marketplaceSystem);
+            pauseScreen();
+            break;
+        case 7:
             marketplaceSystem.saveData();
             std::cout << "Data saved. Goodbye.\n";
             running = false;
