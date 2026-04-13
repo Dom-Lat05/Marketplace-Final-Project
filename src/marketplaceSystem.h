@@ -36,6 +36,8 @@ public:
     std::vector<Listing>& getMyListings();
 
     void filterListingsByPrice(double minPrice, double maxPrice) const;
+    void sortListingsByPriceLowToHigh() const;
+    void sortListingsByPriceHighToLow() const;
 
     int findUserIndex(const std::string& username) const;
 };
