@@ -1,158 +1,161 @@
-#include "marketplaceSystem.h"
-#include <fstream>
 #include <iostream>
+#include <algorithm>
+#include "marketplace.h"
 
-MarketplaceSystem::MarketplaceSystem() : currentUserIndex(-1) {
+// Add User
+void Marketplace::addUser(const User& user) {
+    users.push_back(user);
 }
 
-int MarketplaceSystem::findUserIndex(const std::string& username) const {
-    for (size_t i = 0; i < users.size(); ++i) {
-        if (users[i].getUsername() == username) {
-            return static_cast<int>(i);
+// Add Listing
+void Marketplace::addListing(const Listing& listing) {
+    all_Listings.push_back(listing);
+}
+
+// Display All Listings
+void Marketplace::displayAllListings() const {
+    std::cout << "All Listings in the Marketplace:\n";
+    for (const auto& listing : all_Listings) {
+        listing.display();
+        std::cout << "-------------------------\n";
+    }
+}
+
+// Display my listings
+void Marketplace::displayMyListings(const std::string& username) const {
+    std::cout << "Listings for user: " << username << "\n";
+
+    bool found = false;
+
+    for (const auto& listing : all_Listings) {
+        if (listing.getName() == username) {
+            listing.display();
+            std::cout << "-------------------------\n";
+            found = true;
         }
     }
-    return -1;
-}
 
-bool MarketplaceSystem::createUser(const std::string& username, const std::string& password) {
-    if (findUserIndex(username) != -1) {
-        std::cout << "Username already exists. Please choose a different username.\n";
-        return false;
-    }
-
-    users.emplace_back(username, password);
-    marketplace.addUser(users.back());
-    std::cout << "User created successfully: " << username << "\n";
-    return true;
-}
-
-bool MarketplaceSystem::login(const std::string& username, const std::string& password) {
-    int index = findUserIndex(username);
-
-    if (index != -1 && users[index].login(username, password)) {
-        currentUserIndex = index;
-        std::cout << "Login successful. Welcome, " << username << "!\n";
-        return true;
-    }
-
-    std::cout << "Invalid username or password. Please try again.\n";
-    return false;
-}
-
-void MarketplaceSystem::logout() {
-    if (isLoggedIn()) {
-        std::cout << "User " << getCurrentUsername() << " logged out successfully.\n";
-        currentUserIndex = -1;
-    } else {
-        std::cout << "No user is currently logged in.\n";
+    if (!found) {
+        std::cout << "No listings found for user: " << username << "\n";
     }
 }
 
-bool MarketplaceSystem::isLoggedIn() const {
-    return currentUserIndex != -1;
+// Get all listings
+std::vector<Listing>& Marketplace::getAllListings() {
+    return all_Listings;
 }
 
-std::string MarketplaceSystem::getCurrentUsername() const {
-    if (isLoggedIn()) {
-        return users[currentUserIndex].getUsername();
-    }
-    return "";
+const std::vector<Listing>& Marketplace::getAllListings() const {
+    return all_Listings;
 }
 
-bool MarketplaceSystem::addListing(const std::string& name, const std::string& description,
-                                   const std::string& category, const std::string& condition,
-                                   const std::string& location, double price) {
-    if (!isLoggedIn()) {
-        std::cout << "You must be logged in to add a listing.\n";
-        return false;
+// Search listings by name
+void Marketplace::searchListingsByName(const std::string& name) const {
+    bool found = false;
+
+    std::cout << "Search Results for Name: " << name << "\n";
+    for (const auto& listing : all_Listings) {
+        if (listing.getName() == name) {
+            listing.display();
+            std::cout << "-------------------------\n";
+            found = true;
+        }
     }
 
-    Listing newListing(name, description, category, condition, "Available", location, price);
-
-    marketplace.addListing(newListing);
-    users[currentUserIndex].addListing(newListing);
-
-    std::cout << "Listing added successfully: " << name << "\n";
-    return true;
+    if (!found) {
+        std::cout << "No listings found with the name: " << name << "\n";
+    }
 }
 
-bool MarketplaceSystem::markListingAsSold(const std::string& listingName) {
-    if (!isLoggedIn()) {
-        std::cout << "You must be logged in to mark a listing as sold.\n";
-        return false;
+// Filter by Category
+void Marketplace::filterListingsByCategory(const std::string& category) const {
+    bool found = false;
+
+    std::cout << "Filter Results for Category: " << category << "\n";
+    for (const auto& listing : all_Listings) {
+        if (listing.getCategory() == category) {
+            listing.display();
+            std::cout << "-------------------------\n";
+            found = true;
+        }
     }
 
-    for (auto& listing : marketplace.getAllListings()) {
-        if (listing.getName() == listingName) {
-            listing.markAsSold();
-            std::cout << "Listing marked as sold: " << listingName << "\n";
-            return true;
+    if (!found) {
+        std::cout << "No listings found in the category: " << category << "\n";
+    }
+}
+
+// Filter by Price
+void Marketplace::filterListingsByPrice(double minPrice, double maxPrice) const {
+    bool found = false;
+
+    std::cout << "Filter Results for Price Range: $" << minPrice
+              << " - $" << maxPrice << "\n";
+
+    for (const auto& listing : all_Listings) {
+        if (listing.getPrice() >= minPrice && listing.getPrice() <= maxPrice) {
+            listing.display();
+            std::cout << "-------------------------\n";
+            found = true;
+        }
+    }
+
+    if (!found) {
+        std::cout << "No listings found in that price range.\n";
+    }
+}
+
+// Sort by Price Low to High
+void Marketplace::sortListingsByPriceLowToHigh() const {
+    std::vector<Listing> sortedListings = all_Listings;
+
+    std::sort(sortedListings.begin(), sortedListings.end(),
+        [](const Listing& a, const Listing& b) {
+            return a.getPrice() < b.getPrice();
+        });
+
+    if (sortedListings.empty()) {
+        std::cout << "No listings available to sort.\n";
+        return;
+    }
+
+    std::cout << "Listings Sorted by Price (Low to High):\n";
+    for (const auto& listing : sortedListings) {
+        listing.display();
+        std::cout << "-------------------------\n";
+    }
+}
+
+// Sort by Price High to Low
+void Marketplace::sortListingsByPriceHighToLow() const {
+    std::vector<Listing> sortedListings = all_Listings;
+
+    std::sort(sortedListings.begin(), sortedListings.end(),
+        [](const Listing& a, const Listing& b) {
+            return a.getPrice() > b.getPrice();
+        });
+
+    if (sortedListings.empty()) {
+        std::cout << "No listings available to sort.\n";
+        return;
+    }
+
+    std::cout << "Listings Sorted by Price (High to Low):\n";
+    for (const auto& listing : sortedListings) {
+        listing.display();
+        std::cout << "-------------------------\n";
+    }
+}
+
+// Remove listing
+void Marketplace::removeListing(const std::string& listingName) {
+    for (auto it = all_Listings.begin(); it != all_Listings.end(); ++it) {
+        if (it->getName() == listingName) {
+            all_Listings.erase(it);
+            std::cout << "Listing removed: " << listingName << "\n";
+            return;
         }
     }
 
     std::cout << "Listing not found: " << listingName << "\n";
-    return false;
-}
-
-std::vector<Listing> MarketplaceSystem::getAllListings() const {
-    return marketplace.getAllListings();
-}
-
-std::vector<Listing>& MarketplaceSystem::getMyListings() {
-    return users[currentUserIndex].getListings();
-}
-
-void MarketplaceSystem::loadData() {
-    std::ifstream userFile("users.txt");
-    std::ifstream listingFile("listings.txt");
-
-    if (userFile.is_open()) {
-        std::string username, password;
-
-        while (userFile >> username >> password) {
-            users.emplace_back(username, password);
-            marketplace.addUser(users.back());
-        }
-
-        userFile.close();
-    }
-
-    if (listingFile.is_open()) {
-        std::string name, description, category, condition, item_status, location;
-        double price;
-
-        while (listingFile >> name >> description >> category >> condition >> item_status >> location >> price) {
-            Listing listing(name, description, category, condition, item_status, location, price);
-            marketplace.addListing(listing);
-        }
-
-        listingFile.close();
-    }
-}
-
-void MarketplaceSystem::saveData() {
-    std::ofstream userFile("users.txt");
-    std::ofstream listingFile("listings.txt");
-
-    if (userFile.is_open()) {
-        for (const auto& user : users) {
-            userFile << user.getUsername() << " " << user.getPassword() << "\n";
-        }
-
-        userFile.close();
-    }
-
-    if (listingFile.is_open()) {
-        for (const auto& listing : marketplace.getAllListings()) {
-            listingFile << listing.getName() << " "
-                        << listing.getDescription() << " "
-                        << listing.getCategory() << " "
-                        << listing.getCondition() << " "
-                        << listing.getStatus() << " "
-                        << listing.getLocation() << " "
-                        << listing.getPrice() << "\n";
-        }
-
-        listingFile.close();
-    }
 }
