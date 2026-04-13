@@ -74,6 +74,46 @@ void filterListingsByCategory(MarketplaceSystem& system) {
     }
 }
 
+void createListing(MarketplaceSystem& system) {
+    std::string name;
+    std::string description;
+    std::string category;
+    std::string condition;
+    std::string location;
+    double price;
+
+    std::cout << "\n===== CREATE LISTING =====\n";
+
+    std::cout << "Enter item name: ";
+    std::getline(std::cin, name);
+
+    std::cout << "Enter description: ";
+    std::getline(std::cin, description);
+
+    std::cout << "Enter category: ";
+    std::getline(std::cin, category);
+
+    std::cout << "Enter condition: ";
+    std::getline(std::cin, condition);
+
+    std::cout << "Enter location: ";
+    std::getline(std::cin, location);
+
+    std::cout << "Enter price: ";
+    while (!(std::cin >> price) || price < 0) {
+        std::cout << "Invalid price. Enter a valid number: ";
+        clearInput();
+    }
+    clearInput();
+
+    if (system.addListing(name, description, category, condition, location, price)) {
+        std::cout << "Listing created successfully.\n";
+    }
+    else {
+        std::cout << "Failed to create listing.\n";
+    }
+}
+
 int main() {
     MarketplaceSystem marketplaceSystem;
 
