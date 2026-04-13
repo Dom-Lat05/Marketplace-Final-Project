@@ -153,6 +153,66 @@ void markListingSold(MarketplaceSystem& system) {
     }
 }
 
+void loggedInMenu(MarketplaceSystem& system) {
+    int choice = 0;
+
+    while (system.isLoggedIn()) {
+        std::cout << "\n===== USER MENU =====\n";
+        std::cout << "Logged in as: " << system.getCurrentUsername() << "\n";
+        std::cout << "1. Create Listing\n";
+        std::cout << "2. View My Listings\n";
+        std::cout << "3. View All Listings\n";
+        std::cout << "4. Search Listings by Name\n";
+        std::cout << "5. Filter Listings by Category\n";
+        std::cout << "6. Mark Listing as Sold\n";
+        std::cout << "7. Logout\n";
+        std::cout << "Enter your choice: ";
+
+        while (!(std::cin >> choice)) {
+            std::cout << "Invalid choice. Enter a number: ";
+            clearInput();
+        }
+        clearInput();
+
+        switch (choice) {
+        case 1:
+            createListing(system);
+            system.saveData();
+            pauseScreen();
+            break;
+        case 2:
+            viewMyListings(system);
+            pauseScreen();
+            break;
+        case 3:
+            displayAllListings(system);
+            pauseScreen();
+            break;
+        case 4:
+            searchListingsByName(system);
+            pauseScreen();
+            break;
+        case 5:
+            filterListingsByCategory(system);
+            pauseScreen();
+            break;
+        case 6:
+            markListingSold(system);
+            system.saveData();
+            pauseScreen();
+            break;
+        case 7:
+            system.logout();
+            system.saveData();
+            std::cout << "Logged out successfully.\n";
+            break;
+        default:
+            std::cout << "Invalid option.\n";
+            pauseScreen();
+        }
+    }
+}
+
 int main() {
     MarketplaceSystem marketplaceSystem;
 
