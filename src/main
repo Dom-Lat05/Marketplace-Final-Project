@@ -1,5 +1,34 @@
 #include <iostream>
+#include <limits>
+#include <string>
+#include <vector>
 #include "marketplaceSystem.h"
+
+void clearInput() {
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
+void pauseScreen() {
+    std::cout << "\nPress Enter to continue...";
+    std::cin.get();
+}
+
+void displayAllListings(MarketplaceSystem& system) {
+    std::vector<Listing> listings = system.getAllListings();
+
+    if (listings.empty()) {
+        std::cout << "\nNo listings available.\n";
+        return;
+    }
+
+    std::cout << "\n===== ALL LISTINGS =====\n";
+    for (size_t i = 0; i < listings.size(); ++i) {
+        std::cout << "\nListing #" << i + 1 << "\n";
+        listings[i].displayDetails();
+        std::cout << "-------------------------\n";
+    }
+}
 
 int main() {
     MarketplaceSystem marketplaceSystem;
