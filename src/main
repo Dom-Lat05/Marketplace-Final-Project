@@ -135,6 +135,24 @@ void viewMyListings(MarketplaceSystem& system) {
     }
 }
 
+void markListingSold(MarketplaceSystem& system) {
+    if (!system.isLoggedIn()) {
+        std::cout << "\nYou must be logged in first.\n";
+        return;
+    }
+
+    std::string listingName;
+    std::cout << "\nEnter the name of the listing to mark as sold: ";
+    std::getline(std::cin, listingName);
+
+    if (system.markListingAsSold(listingName)) {
+        std::cout << "Listing marked as sold successfully.\n";
+    }
+    else {
+        std::cout << "Could not mark listing as sold.\n";
+    }
+}
+
 int main() {
     MarketplaceSystem marketplaceSystem;
 
