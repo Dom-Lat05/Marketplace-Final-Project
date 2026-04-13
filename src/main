@@ -215,20 +215,92 @@ void loggedInMenu(MarketplaceSystem& system) {
 
 int main() {
     MarketplaceSystem marketplaceSystem;
-
     marketplaceSystem.loadData();
 
-    // Backend test
-    marketplaceSystem.createUser("Dom", "1234");
-    marketplaceSystem.login("Dom", "1234");
+    int choice = 0;
+    bool running = true;
 
-    marketplaceSystem.addListing("Bike", "A nice bike", "Sports", "Used", "New York", 100.0);
-    marketplaceSystem.addListing("Laptop", "A powerful laptop", "Electronics", "New", "San Francisco", 1200.0);
+    while (running) {
+        std::cout << "\n===== ONLINE MARKETPLACE =====\n";
+        std::cout << "1. Create Account\n";
+        std::cout << "2. Login\n";
+        std::cout << "3. View All Listings\n";
+        std::cout << "4. Search Listings by Name\n";
+        std::cout << "5. Filter Listings by Category\n";
+        std::cout << "6. Exit\n";
+        std::cout << "Enter your choice: ";
 
-    std::cout << "Current User: " << marketplaceSystem.getCurrentUsername() << std::endl;
-    std::cout << "Total listings: " << marketplaceSystem.getAllListings().size() << std::endl;
+        while (!(std::cin >> choice)) {
+            std::cout << "Invalid choice. Enter a number: ";
+            clearInput();
+        }
+        clearInput();
 
-    marketplaceSystem.saveData();
+        switch (choice) {
+        case 1: {
+            std::string username;
+            std::string password;
+
+            std::cout << "\n===== CREATE ACCOUNT =====\n";
+            std::cout << "Enter username: ";
+            std::getline(std::cin, username);
+
+            std::cout << "Enter password: ";
+            std::getline(std::cin, password);
+
+            if (marketplaceSystem.createUser(username, password)) {
+                marketplaceSystem.saveData();
+                std::cout << "Account created successfully.\n";
+            }
+            else {
+                std::cout << "Could not create account.\n";
+            }
+
+            pauseScreen();
+            break;
+        }
+        case 2: {
+            std::string username;
+            std::string password;
+
+            std::cout << "\n===== LOGIN =====\n";
+            std::cout << "Enter username: ";
+            std::getline(std::cin, username);
+
+            std::cout << "Enter password: ";
+            std::getline(std::cin, password);
+
+            if (marketplaceSystem.login(username, password)) {
+                loggedInMenu(marketplaceSystem);
+            }
+            else {
+                std::cout << "Login failed.\n";
+                pauseScreen();
+            }
+            break;
+        }
+        case 3:
+            displayAllListings(marketplaceSystem);
+            pauseScreen();
+            break;
+        case 4:
+            searchListingsByName(marketplaceSystem);
+            pauseScreen();
+            break;
+        case 5:
+            filterListingsByCategory(marketplaceSystem);
+            pauseScreen();
+            break;
+        case 6:
+            marketplaceSystem.saveData();
+            std::cout << "Data saved. Goodbye.\n";
+            running = false;
+            break;
+        default:
+            std::cout << "Invalid option.\n";
+            pauseScreen();
+        }
+    }
 
     return 0;
 }
