@@ -30,6 +30,50 @@ void displayAllListings(MarketplaceSystem& system) {
     }
 }
 
+void searchListingsByName(MarketplaceSystem& system) {
+    std::string searchName;
+    std::cout << "\nEnter listing name to search: ";
+    std::getline(std::cin, searchName);
+
+    std::vector<Listing> listings = system.getAllListings();
+    bool found = false;
+
+    std::cout << "\n===== SEARCH RESULTS =====\n";
+    for (const auto& listing : listings) {
+        if (listing.getName() == searchName) {
+            listing.displayDetails();
+            std::cout << "-------------------------\n";
+            found = true;
+        }
+    }
+
+    if (!found) {
+        std::cout << "No listings found with that name.\n";
+    }
+}
+
+void filterListingsByCategory(MarketplaceSystem& system) {
+    std::string category;
+    std::cout << "\nEnter category to filter by: ";
+    std::getline(std::cin, category);
+
+    std::vector<Listing> listings = system.getAllListings();
+    bool found = false;
+
+    std::cout << "\n===== FILTER RESULTS =====\n";
+    for (const auto& listing : listings) {
+        if (listing.getCategory() == category) {
+            listing.displayDetails();
+            std::cout << "-------------------------\n";
+            found = true;
+        }
+    }
+
+    if (!found) {
+        std::cout << "No listings found in that category.\n";
+    }
+}
+
 int main() {
     MarketplaceSystem marketplaceSystem;
 
