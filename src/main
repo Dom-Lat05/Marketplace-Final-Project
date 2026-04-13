@@ -114,6 +114,27 @@ void createListing(MarketplaceSystem& system) {
     }
 }
 
+void viewMyListings(MarketplaceSystem& system) {
+    if (!system.isLoggedIn()) {
+        std::cout << "\nYou must be logged in first.\n";
+        return;
+    }
+
+    std::vector<Listing>& myListings = system.getMyListings();
+
+    if (myListings.empty()) {
+        std::cout << "\nYou have no listings.\n";
+        return;
+    }
+
+    std::cout << "\n===== MY LISTINGS =====\n";
+    for (size_t i = 0; i < myListings.size(); ++i) {
+        std::cout << "\nMy Listing #" << i + 1 << "\n";
+        myListings[i].displayDetails();
+        std::cout << "-------------------------\n";
+    }
+}
+
 int main() {
     MarketplaceSystem marketplaceSystem;
 
