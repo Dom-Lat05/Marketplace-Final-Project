@@ -1,11 +1,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(const User& user, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , m_user(user)
 {
     ui->setupUi(this);
+
+    setWindowTitle("Marketplace - " + m_user.getUsername());
 
     ui->cmbCategory->addItems({"All", "Electronics", "Furniture", "Clothing"});
 
