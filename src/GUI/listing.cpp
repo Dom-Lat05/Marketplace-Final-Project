@@ -2,8 +2,8 @@
 
 Listing::Listing()
     : m_id(-1),
-      m_price(0.0),
-      m_sold(false)
+    m_price(0.0),
+    m_sold(false)
 {
 }
 
@@ -13,12 +13,12 @@ Listing::Listing(const QString& title,
                  const QString& description,
                  const QString& seller)
     : m_id(-1),
-      m_title(title),
-      m_category(category),
-      m_price(price),
-      m_description(description),
-      m_seller(seller),
-      m_sold(false)
+    m_title(title),
+    m_category(category),
+    m_price(price),
+    m_description(description),
+    m_seller(seller),
+    m_sold(false)
 {
 }
 
@@ -30,12 +30,12 @@ Listing::Listing(int id,
                  const QString& seller,
                  bool sold)
     : m_id(id),
-      m_title(title),
-      m_category(category),
-      m_price(price),
-      m_description(description),
-      m_seller(seller),
-      m_sold(sold)
+    m_title(title),
+    m_category(category),
+    m_price(price),
+    m_description(description),
+    m_seller(seller),
+    m_sold(sold)
 {
 }
 
