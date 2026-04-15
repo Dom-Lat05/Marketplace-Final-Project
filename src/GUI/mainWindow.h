@@ -2,9 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QListWidgetItem>
 #include "user.h"
-#include "marketplacemanager.h"
+#include "databasemanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -17,20 +16,19 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(const User& user, QWidget *parent = nullptr);
+    explicit MainWindow(const User& user, DatabaseManager *db, QWidget *parent = nullptr);
     ~MainWindow();
 
 private slots:
     void on_btnFilter_clicked();
     void on_btnAdd_clicked();
-    void on_lstListings_itemClicked(QListWidgetItem *item);
 
 private:
     void displayListings(const QVector<Listing>& listings);
 
     Ui::MainWindow *ui;
     User m_user;
-    MarketplaceManager m_manager;
+    DatabaseManager *m_db;
 };
 
 #endif // MAINWINDOW_H
