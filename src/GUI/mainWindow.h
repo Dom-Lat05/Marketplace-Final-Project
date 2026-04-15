@@ -21,6 +21,7 @@ private slots:
     void on_btnFilter_clicked();
     void on_btnAdd_clicked();
     void on_btnLogout_clicked();
+    void on_btnMyListings_clicked();
 
 private:
     void displayListings(const QVector<Listing>& listings);
@@ -29,5 +30,7 @@ private:
     User m_user;
     DatabaseManager *m_db;
 };
+
+void on_btnMyListings_clicked();
 
 #endif
