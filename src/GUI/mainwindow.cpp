@@ -63,7 +63,7 @@ void MainWindow::on_btnAdd_clicked()
         QVector<Listing> filteredListings = m_db->filterListings(
             ui->txtSearch->text().trimmed(),
             ui->cmbCategory->currentText()
-        );
+            );
 
         displayListings(filteredListings);
     }
@@ -71,18 +71,17 @@ void MainWindow::on_btnAdd_clicked()
 
 void MainWindow::on_btnLogout_clicked()
 {
-    this->hide();
-
-    LoginDialog login(m_db);
+    LoginDialog login(m_db, this);
 
     if (login.exec() == QDialog::Accepted)
     {
         User newUser = login.getUser();
+
         MainWindow *newWindow = new MainWindow(newUser, m_db);
         newWindow->show();
-    }
 
-    this->close();
+        this->close();
+    }
 }
 
 void MainWindow::on_btnMyListings_clicked()
@@ -93,7 +92,15 @@ void MainWindow::on_btnMyListings_clicked()
     QVector<Listing> filteredListings = m_db->filterListings(
         ui->txtSearch->text().trimmed(),
         ui->cmbCategory->currentText()
-    );
+        );
 
     displayListings(filteredListings);
+}
+
+
+void MainWindow::on_txtSearch_textChanged(const QString &text)
+{
+    // Search by title only, across all categories
+    QVector<Listing> searchedListings = m_db->filterListings(text, "All");
+    displayListings(searchedListings);
 }
