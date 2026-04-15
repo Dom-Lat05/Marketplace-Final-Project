@@ -1,11 +1,12 @@
-#include "mylistingsdialog.h"
-#include "ui_mylistingsdialog.h"
-#include "editlistingdialog.h"
+#include "mylistingdialogue.h"
+#include "ui_mylistingdialogue.h"
+
+#include <QInputDialog>
 #include <QMessageBox>
 
-MyListingsDialog::MyListingsDialog(const User& user, DatabaseManager *db, QWidget *parent)
+MyListingDialogue::MyListingDialogue(const User& user, DatabaseManager *db, QWidget *parent)
     : QDialog(parent)
-    , ui(new Ui::MyListingsDialog)
+    , ui(new Ui::MyListingDialogue)
     , m_user(user)
     , m_db(db)
 {
@@ -13,70 +14,127 @@ MyListingsDialog::MyListingsDialog(const User& user, DatabaseManager *db, QWidge
     loadListings();
 }
 
-MyListingsDialog::~MyListingsDialog()
+MyListingDialogue::~MyListingDialogue()
 {
     delete ui;
 }
 
-void MyListingsDialog::loadListings()
+void MyListingDialogue::loadListings()
 {
     ui->lstMyListings->clear();
     m_listings = m_db->getListingsBySeller(m_user.getUsername());
 
-    for (const Listing& l : m_listings)
+    for (const Listing& listing : m_listings)
     {
-        ui->lstMyListings->addItem(l.toDisplayString());
+        ui->lstMyListings->addItem(listing.toDisplayString());
     }
 }
 
-void MyListingsDialog::on_btnEdit_clicked()
+void MyListingDialogue::on_btnEdit_clicked()
 {
     int index = ui->lstMyListings->currentRow();
 
     if (index < 0)
     {
-        QMessageBox::warning(this, "Error", "Select a listing first.");
+        QMessageBox::warning(this, "Error", "Please select a listing to edit.");
         return;
     }
 
     Listing listing = m_listings[index];
 
-    EditListingDialog dialog(listing, this);
+    bool ok = false;
 
-    if (dialog.exec() == QDialog::Accepted)
-    {
-        Listing updated = dialog.getUpdatedListing();
+    QString newTitle = QInputDialog::getText(
+        this,
+        "Edit Title",
+        "Title:",
+        QLineEdit::Normal,
+        listing.getTitle(),
+        &ok
+    );
 
-        m_db->updateListing(
+    if (!ok || newTitle.trimmed().isEmpty())
+        return;
+
+    QStringList categories;
+    categories << "Electronics" << "Furniture" << "Clothing";
+
+    QString newCategory = QInputDialog::getItem(
+        this,
+        "Edit Category",
+        "Category:",
+        categories,
+        categories.indexOf(listing.getCategory()),
+        false,
+        &ok
+    );
+
+    if (!ok || newCategory.isEmpty())
+        return;
+
+    double newPrice = QInputDialog::getDouble(
+        this,
+        "Edit Price",
+        "Price:",
+        listing.getPrice(),
+        0.01,
+        100000.0,
+        2,
+        &ok
+    );
+
+    if (!ok)
+        return;
+
+    QString newDescription = QInputDialog::getMultiLineText(
+        this,
+        "Edit Description",
+        "Description:",
+        listing.getDescription(),
+        &ok
+    );
+
+    if (!ok)
+        return;
+
+    if (!m_db->updateListing(
             listing.getId(),
-            updated.getTitle(),
-            updated.getCategory(),
-            updated.getPrice(),
-            updated.getDescription()
-        );
-
-        loadListings();
-    }
-}
-
-void MyListingsDialog::on_btnMarkSold_clicked()
-{
-    int index = ui->lstMyListings->currentRow();
-
-    if (index < 0)
+            newTitle.trimmed(),
+            newCategory,
+            newPrice,
+            newDescription.trimmed()))
     {
-        QMessageBox::warning(this, "Error", "Select a listing first.");
+        QMessageBox::warning(this, "Error", "Could not update listing.");
         return;
     }
 
-    Listing listing = m_listings[index];
-
-    m_db->markListingSold(listing.getId());
-
+    QMessageBox::information(this, "Success", "Listing updated.");
     loadListings();
 }
 
-void MyListingsDialog::on_btnClose_clicked()
+void MyListingDialogue::on_btnMarkSold_clicked()
+{
+    int index = ui->lstMyListings->currentRow();
+
+    if (index < 0)
+    {
+        QMessageBox::warning(this, "Error", "Please select a listing first.");
+        return;
+    }
+
+    Listing listing = m_listings[index];
+
+    if (!m_db->markListingSold(listing.getId()))
+    {
+        QMessageBox::warning(this, "Error", "Could not mark listing as sold.");
+        return;
+    }
+
+    QMessageBox::information(this, "Success", "Listing marked as sold.");
+    loadListings();
+}
+
+void MyListingDialogue::on_btnClose_clicked()
 {
     close();
 }
