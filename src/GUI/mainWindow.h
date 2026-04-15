@@ -22,6 +22,7 @@ private slots:
     void on_btnAdd_clicked();
     void on_btnLogout_clicked();
     void on_btnMyListings_clicked();
+    void on_txtSearch_textChanged(const QString &text);
 
 private:
     void displayListings(const QVector<Listing>& listings);
