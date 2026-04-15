@@ -1,12 +1,12 @@
-#include "mylistingdialogue.h"
-#include "ui_mylistingdialogue.h"
+#include "mylistingdialog.h"
+#include "ui_mylistingdialog.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
 
-MyListingDialogue::MyListingDialogue(const User& user, DatabaseManager *db, QWidget *parent)
+MyListingDialog::MyListingDialog(const User& user, DatabaseManager *db, QWidget *parent)
     : QDialog(parent)
-    , ui(new Ui::MyListingDialogue)
+    , ui(new Ui::MyListingDialog)
     , m_user(user)
     , m_db(db)
 {
@@ -14,12 +14,12 @@ MyListingDialogue::MyListingDialogue(const User& user, DatabaseManager *db, QWid
     loadListings();
 }
 
-MyListingDialogue::~MyListingDialogue()
+MyListingDialog::~MyListingDialog()
 {
     delete ui;
 }
 
-void MyListingDialogue::loadListings()
+void MyListingDialog::loadListings()
 {
     ui->lstMyListings->clear();
     m_listings = m_db->getListingsBySeller(m_user.getUsername());
@@ -30,7 +30,7 @@ void MyListingDialogue::loadListings()
     }
 }
 
-void MyListingDialogue::on_btnEdit_clicked()
+void MyListingDialog::on_btnEdit_clicked()
 {
     int index = ui->lstMyListings->currentRow();
 
@@ -45,14 +45,9 @@ void MyListingDialogue::on_btnEdit_clicked()
     bool ok = false;
 
     QString newTitle = QInputDialog::getText(
-        this,
-        "Edit Title",
-        "Title:",
-        QLineEdit::Normal,
-        listing.getTitle(),
-        &ok
-    );
-
+        this, "Edit Title", "Title:",
+        QLineEdit::Normal, listing.getTitle(), &ok
+        );
     if (!ok || newTitle.trimmed().isEmpty())
         return;
 
@@ -60,40 +55,23 @@ void MyListingDialogue::on_btnEdit_clicked()
     categories << "Electronics" << "Furniture" << "Clothing";
 
     QString newCategory = QInputDialog::getItem(
-        this,
-        "Edit Category",
-        "Category:",
-        categories,
-        categories.indexOf(listing.getCategory()),
-        false,
-        &ok
-    );
-
+        this, "Edit Category", "Category:",
+        categories, categories.indexOf(listing.getCategory()), false, &ok
+        );
     if (!ok || newCategory.isEmpty())
         return;
 
     double newPrice = QInputDialog::getDouble(
-        this,
-        "Edit Price",
-        "Price:",
-        listing.getPrice(),
-        0.01,
-        100000.0,
-        2,
-        &ok
-    );
-
+        this, "Edit Price", "Price:",
+        listing.getPrice(), 0.01, 100000.0, 2, &ok
+        );
     if (!ok)
         return;
 
     QString newDescription = QInputDialog::getMultiLineText(
-        this,
-        "Edit Description",
-        "Description:",
-        listing.getDescription(),
-        &ok
-    );
-
+        this, "Edit Description", "Description:",
+        listing.getDescription(), &ok
+        );
     if (!ok)
         return;
 
@@ -112,7 +90,7 @@ void MyListingDialogue::on_btnEdit_clicked()
     loadListings();
 }
 
-void MyListingDialogue::on_btnMarkSold_clicked()
+void MyListingDialog::on_btnMarkSold_clicked()
 {
     int index = ui->lstMyListings->currentRow();
 
@@ -134,7 +112,7 @@ void MyListingDialogue::on_btnMarkSold_clicked()
     loadListings();
 }
 
-void MyListingDialogue::on_btnClose_clicked()
+void MyListingDialog::on_btnClose_clicked()
 {
     close();
 }
