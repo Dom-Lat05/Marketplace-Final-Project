@@ -6,9 +6,7 @@
 #include "databasemanager.h"
 
 QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
+namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
@@ -16,12 +14,13 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(const User& user, DatabaseManager *db, QWidget *parent = nullptr);
+    MainWindow(const User& user, DatabaseManager *db, QWidget *parent = nullptr);
     ~MainWindow();
 
 private slots:
     void on_btnFilter_clicked();
     void on_btnAdd_clicked();
+    void on_btnLogout_clicked();
 
 private:
     void displayListings(const QVector<Listing>& listings);
@@ -31,4 +30,4 @@ private:
     DatabaseManager *m_db;
 };
 
-#endif // MAINWINDOW_H
+#endif
