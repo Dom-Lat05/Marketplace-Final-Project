@@ -19,7 +19,7 @@ void DatabaseManager::createTables()
     QSqlQuery query;
 
     query.exec("CREATE TABLE IF NOT EXISTS users (username TEXT PRIMARY KEY, password TEXT)");
-    query.exec("CREATE TABLE IF NOT EXISTS listings (title TEXT, category TEXT, price REAL, seller TEXT)");
+    query.exec("CREATE TABLE IF NOT EXISTS listings (title TEXT, category TEXT, price REAL, description TEXT, seller TEXT)");
 }
 
 bool DatabaseManager::createUser(const QString& username, const QString& password)
@@ -57,10 +57,11 @@ bool DatabaseManager::updatePassword(const QString& username, const QString& cur
 void DatabaseManager::addListing(const Listing& listing)
 {
     QSqlQuery query;
-    query.prepare("INSERT INTO listings VALUES (:t, :c, :p, :s)");
+    query.prepare("INSERT INTO listings VALUES (:t, :c, :p, :d, :s)");
     query.bindValue(":t", listing.getTitle());
     query.bindValue(":c", listing.getCategory());
     query.bindValue(":p", listing.getPrice());
+    query.bindValue(":d", listing.getDescription());
     query.bindValue(":s", listing.getSeller());
 
     query.exec();
@@ -74,10 +75,11 @@ QVector<Listing> DatabaseManager::getAllListings()
     while (query.next())
     {
         list.append(Listing(
-            query.value(0).toString(),
-            query.value(1).toString(),
-            query.value(2).toDouble(),
-            query.value(3).toString()
+            query.value(0).toString(), // title
+            query.value(1).toString(), // category
+            query.value(2).toDouble(), // price
+            query.value(3).toString(), // description
+            query.value(4).toString()  // seller
         ));
     }
 
@@ -105,10 +107,11 @@ QVector<Listing> DatabaseManager::filterListings(const QString& search, const QS
     while (query.next())
     {
         list.append(Listing(
-            query.value(0).toString(),
-            query.value(1).toString(),
-            query.value(2).toDouble(),
-            query.value(3).toString()
+            query.value(0).toString(), // title
+            query.value(1).toString(), // category
+            query.value(2).toDouble(), // price
+            query.value(3).toString(), // description
+            query.value(4).toString()  // seller
         ));
     }
 
