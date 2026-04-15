@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "addlistingdialog.h"
 #include "logindialog.h"
+#include "mylistingdialog.h"
 
 MainWindow::MainWindow(const User& user, DatabaseManager *db, QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), m_user(user), m_db(db)
@@ -32,7 +33,7 @@ void MainWindow::on_btnFilter_clicked()
     displayListings(m_db->filterListings(
         ui->txtSearch->text(),
         ui->cmbCategory->currentText()
-    ));
+        ));
 }
 
 void MainWindow::on_btnAdd_clicked()
@@ -59,4 +60,12 @@ void MainWindow::on_btnLogout_clicked()
     }
 
     this->close();
+}
+
+
+
+void MainWindow::on_btnMyListings_clicked()
+{
+    MyListingDialog dialog(m_user, m_db, this);
+    dialog.exec();
 }
