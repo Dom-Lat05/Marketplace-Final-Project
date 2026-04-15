@@ -1,9 +1,8 @@
 #ifndef DATABASEMANAGER_H
 #define DATABASEMANAGER_H
 
-#include <QString>
-#include <QVector>
 #include <QSqlDatabase>
+#include <QVector>
 #include "listing.h"
 
 class DatabaseManager
@@ -16,11 +15,11 @@ public:
 
     bool createUser(const QString& username, const QString& password);
     bool validateUser(const QString& username, const QString& password);
+    bool updatePassword(const QString& username, const QString& currentPassword, const QString& newPassword);
 
-    bool addListing(const Listing& listing);
-    QVector<Listing> getAllListings() const;
-    QVector<Listing> filterListings(const QString& searchText,
-                                    const QString& category) const;
+    void addListing(const Listing& listing);
+    QVector<Listing> getAllListings();
+    QVector<Listing> filterListings(const QString& search, const QString& category);
 
 private:
     QSqlDatabase m_db;
