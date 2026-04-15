@@ -1,13 +1,10 @@
 #include "logindialog.h"
 #include "ui_logindialog.h"
 #include "createaccountdialog.h"
-
 #include <QMessageBox>
 
 LoginDialog::LoginDialog(DatabaseManager *db, QWidget *parent)
-    : QDialog(parent)
-    , ui(new Ui::LoginDialog)
-    , m_db(db)
+    : QDialog(parent), ui(new Ui::LoginDialog), m_db(db)
 {
     ui->setupUi(this);
 }
@@ -24,27 +21,21 @@ User LoginDialog::getUser() const
 
 void LoginDialog::on_btnLogin_clicked()
 {
-    QString username = ui->txtUsername->text().trimmed();
-    QString password = ui->txtPassword->text();
+    QString u = ui->txtUsername->text();
+    QString p = ui->txtPassword->text();
 
-    if (username.isEmpty() || password.isEmpty())
+    if (!m_db->validateUser(u, p))
     {
-        QMessageBox::warning(this, "Error", "Please enter both username and password.");
+        QMessageBox::warning(this, "Error", "Invalid login");
         return;
     }
 
-    if (!m_db->validateUser(username, password))
-    {
-        QMessageBox::warning(this, "Login Failed", "Invalid username or password.");
-        return;
-    }
-
-    m_user = User(username);
+    m_user = User(u);
     accept();
 }
 
 void LoginDialog::on_btnCreateAccount_clicked()
 {
-    CreateAccountDialog createDialog(m_db, this);
-    createDialog.exec();
+    CreateAccountDialog dialog(m_db, this);
+    dialog.exec();
 }
