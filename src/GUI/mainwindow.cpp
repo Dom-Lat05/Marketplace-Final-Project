@@ -4,12 +4,24 @@
 #include "logindialog.h"
 #include "mylistingdialog.h"
 
+#include <QPushButton>
+
 MainWindow::MainWindow(const User& user, DatabaseManager *db, QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow), m_user(user), m_db(db)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+    , m_user(user)
+    , m_db(db)
 {
     ui->setupUi(this);
 
+    connect(ui->btnFilter, &QPushButton::clicked, this, &MainWindow::on_btnFilter_clicked);
+    connect(ui->btnAdd, &QPushButton::clicked, this, &MainWindow::on_btnAdd_clicked);
+    connect(ui->btnLogout, &QPushButton::clicked, this, &MainWindow::on_btnLogout_clicked);
+
+    setWindowTitle("Marketplace - " + m_user.getUsername());
     ui->lblWelcome->setText("Welcome, " + m_user.getUsername());
+
+    ui->cmbCategory->clear();
     ui->cmbCategory->addItems({"All", "Electronics", "Furniture", "Clothing"});
 
     displayListings(m_db->getAllListings());
@@ -24,16 +36,19 @@ void MainWindow::displayListings(const QVector<Listing>& listings)
 {
     ui->lstListings->clear();
 
-    for (const Listing& l : listings)
-        ui->lstListings->addItem(l.toDisplayString());
+    for (const Listing& listing : listings)
+    {
+        ui->lstListings->addItem(listing.toDisplayString());
+    }
 }
 
 void MainWindow::on_btnFilter_clicked()
 {
-    displayListings(m_db->filterListings(
-        ui->txtSearch->text(),
-        ui->cmbCategory->currentText()
-        ));
+    QString search = ui->txtSearch->text().trimmed();
+    QString category = ui->cmbCategory->currentText();
+
+    QVector<Listing> filteredListings = m_db->filterListings(search, category);
+    displayListings(filteredListings);
 }
 
 void MainWindow::on_btnAdd_clicked()
@@ -42,8 +57,15 @@ void MainWindow::on_btnAdd_clicked()
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        m_db->addListing(dialog.getListing());
-        displayListings(m_db->getAllListings());
+        Listing listing = dialog.getListing();
+        m_db->addListing(listing);
+
+        QVector<Listing> filteredListings = m_db->filterListings(
+            ui->txtSearch->text().trimmed(),
+            ui->cmbCategory->currentText()
+        );
+
+        displayListings(filteredListings);
     }
 }
 
@@ -55,17 +77,23 @@ void MainWindow::on_btnLogout_clicked()
 
     if (login.exec() == QDialog::Accepted)
     {
-        MainWindow *w = new MainWindow(login.getUser(), m_db);
-        w->show();
+        User newUser = login.getUser();
+        MainWindow *newWindow = new MainWindow(newUser, m_db);
+        newWindow->show();
     }
 
     this->close();
 }
 
-
-
 void MainWindow::on_btnMyListings_clicked()
 {
     MyListingDialog dialog(m_user, m_db, this);
     dialog.exec();
+
+    QVector<Listing> filteredListings = m_db->filterListings(
+        ui->txtSearch->text().trimmed(),
+        ui->cmbCategory->currentText()
+    );
+
+    displayListings(filteredListings);
 }
