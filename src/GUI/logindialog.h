@@ -29,4 +29,4 @@ private:
     DatabaseManager *m_db;
 };
 
-#endif // LOGINDIALOG_H
+#endif
