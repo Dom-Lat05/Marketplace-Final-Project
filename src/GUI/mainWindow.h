@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "user.h"
+#include "marketplacemanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -23,8 +24,11 @@ private slots:
     void on_btnAdd_clicked();
 
 private:
+    void displayListings(const QVector<Listing>& listings);
+
     Ui::MainWindow *ui;
     User m_user;
+    MarketplaceManager m_manager;
 };
 
 #endif // MAINWINDOW_H
