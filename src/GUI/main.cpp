@@ -1,81 +1,113 @@
 #include "mainwindow.h"
+#include "ui_mainwindow.h"
+#include "addlistingdialog.h"
 #include "logindialog.h"
-#include "databasemanager.h"
+#include "mylistingdialog.h"
 
+#include <QPushButton>
 #include <QApplication>
-#include <QMessageBox>
 
-int main(int argc, char *argv[])
+MainWindow::MainWindow(const User& user, DatabaseManager *db, QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+    , m_user(user)
+    , m_db(db)
 {
-    QApplication a(argc, argv);
+    ui->setupUi(this);
 
-    a.setStyleSheet(R"(
-    QWidget {
-        background-color: #f5f7fb;
-        font-family: Segoe UI;
-        font-size: 10pt;
-        color: #222;
-    }
+    connect(ui->btnFilter, &QPushButton::clicked, this, &MainWindow::on_btnFilter_clicked);
+    connect(ui->btnAdd, &QPushButton::clicked, this, &MainWindow::on_btnAdd_clicked);
+    connect(ui->btnLogout, &QPushButton::clicked, this, &MainWindow::on_btnLogout_clicked);
 
-    QMainWindow, QDialog {
-        background-color: #f5f7fb;
-    }
+    setWindowTitle("Marketplace - " + m_user.getUsername());
+    ui->lblWelcome->setText("Welcome, " + m_user.getUsername());
 
-    QLabel {
-        color: #222;
-    }
+    ui->cmbCategory->clear();
+    ui->cmbCategory->addItems({"All", "Electronics", "Furniture", "Clothing"});
 
-    QLineEdit, QComboBox, QDoubleSpinBox, QTextEdit, QListWidget {
-        background: white;
-        border: 1px solid #d0d7e2;
-        border-radius: 8px;
-        padding: 6px;
-    }
+    displayListings(m_db->getAllListings());
+}
 
-    QPushButton {
-        background-color: #2563eb;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 8px 14px;
-        font-weight: 600;
-    }
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
 
-    QPushButton:hover {
-        background-color: #1d4ed8;
-    }
+void MainWindow::displayListings(const QVector<Listing>& listings)
+{
+    ui->lstListings->clear();
 
-    QPushButton:pressed {
-        background-color: #1e40af;
-    }
-
-    QListWidget {
-        border-radius: 25px;
-        padding: 20px;
-    }
-)");
-
-    DatabaseManager db;
-
-    if (!db.openDatabase())
+    for (const Listing& listing : listings)
     {
-        QMessageBox::critical(nullptr, "Database Error", "Could not open database.");
-        return -1;
+        ui->lstListings->addItem(listing.toDisplayString());
     }
+}
 
-    db.createTables();
+void MainWindow::on_btnFilter_clicked()
+{
+    QString search = ui->txtSearch->text().trimmed();
+    QString category = ui->cmbCategory->currentText();
 
-    LoginDialog login(&db);
+    QVector<Listing> filteredListings = m_db->filterListings(search, category);
+    displayListings(filteredListings);
+}
+
+void MainWindow::on_btnAdd_clicked()
+{
+    AddListingDialog dialog(m_user, this);
+
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        Listing listing = dialog.getListing();
+        m_db->addListing(listing);
+
+        QVector<Listing> filteredListings = m_db->filterListings(
+            ui->txtSearch->text().trimmed(),
+            ui->cmbCategory->currentText()
+            );
+
+        displayListings(filteredListings);
+    }
+}
+
+void MainWindow::on_btnLogout_clicked()
+{
+    this->hide();
+
+    LoginDialog login(m_db);
 
     if (login.exec() == QDialog::Accepted)
     {
-        User user = login.getUser();
+        User newUser = login.getUser();
 
-        MainWindow w(user, &db);
-        w.show();
+        MainWindow *newWindow = new MainWindow(newUser, m_db);
+        newWindow->show();
 
-        return a.exec();
+        this->close();
     }
+    else
+    {
+        qApp->quit();
+    }
+}
 
-    return 0;
+void MainWindow::on_btnMyListings_clicked()
+{
+    MyListingDialog dialog(m_user, m_db, this);
+    dialog.exec();
+
+    QVector<Listing> filteredListings = m_db->filterListings(
+        ui->txtSearch->text().trimmed(),
+        ui->cmbCategory->currentText()
+        );
+
+    displayListings(filteredListings);
+}
+
+
+void MainWindow::on_txtSearch_textChanged(const QString &text)
+{
+    // Search by title only, across all categories
+    QVector<Listing> searchedListings = m_db->filterListings(text, "All");
+    displayListings(searchedListings);
 }
