@@ -5,6 +5,7 @@
 #include "mylistingdialog.h"
 
 #include <QPushButton>
+#include <QApplication>
 
 MainWindow::MainWindow(const User& user, DatabaseManager *db, QWidget *parent)
     : QMainWindow(parent)
@@ -71,7 +72,9 @@ void MainWindow::on_btnAdd_clicked()
 
 void MainWindow::on_btnLogout_clicked()
 {
-    LoginDialog login(m_db, this);
+    this->hide();
+
+    LoginDialog login(m_db);
 
     if (login.exec() == QDialog::Accepted)
     {
@@ -81,6 +84,10 @@ void MainWindow::on_btnLogout_clicked()
         newWindow->show();
 
         this->close();
+    }
+    else
+    {
+        qApp->quit();
     }
 }
 
