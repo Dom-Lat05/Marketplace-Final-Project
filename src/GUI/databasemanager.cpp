@@ -1,157 +1,116 @@
 #include "databasemanager.h"
-
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QVariant>
-#include <QDebug>
 
 DatabaseManager::DatabaseManager()
 {
+    m_db = QSqlDatabase::addDatabase("QSQLITE");
+    m_db.setDatabaseName("marketplace.db");
 }
 
 bool DatabaseManager::openDatabase()
 {
-    if (QSqlDatabase::contains("marketplace_connection"))
-    {
-        m_db = QSqlDatabase::database("marketplace_connection");
-    }
-    else
-    {
-        m_db = QSqlDatabase::addDatabase("QSQLITE", "marketplace_connection");
-        m_db.setDatabaseName("marketplace.db");
-    }
-
-    if (!m_db.open())
-    {
-        qDebug() << "Database open error:" << m_db.lastError().text();
-        return false;
-    }
-
-    return true;
+    return m_db.open();
 }
 
 void DatabaseManager::createTables()
 {
-    QSqlQuery query(m_db);
+    QSqlQuery query;
 
-    query.exec(
-        "CREATE TABLE IF NOT EXISTS users ("
-        "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "username TEXT UNIQUE NOT NULL, "
-        "password TEXT NOT NULL)"
-    );
-
-    query.exec(
-        "CREATE TABLE IF NOT EXISTS listings ("
-        "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "title TEXT NOT NULL, "
-        "category TEXT NOT NULL, "
-        "price REAL NOT NULL, "
-        "description TEXT, "
-        "seller TEXT NOT NULL)"
-    );
+    query.exec("CREATE TABLE IF NOT EXISTS users (username TEXT PRIMARY KEY, password TEXT)");
+    query.exec("CREATE TABLE IF NOT EXISTS listings (title TEXT, category TEXT, price REAL, seller TEXT)");
 }
 
 bool DatabaseManager::createUser(const QString& username, const QString& password)
 {
-    QSqlQuery query(m_db);
-    query.prepare("INSERT INTO users (username, password) VALUES (:username, :password)");
-    query.bindValue(":username", username);
-    query.bindValue(":password", password);
+    QSqlQuery query;
+    query.prepare("INSERT INTO users (username, password) VALUES (:u, :p)");
+    query.bindValue(":u", username);
+    query.bindValue(":p", password);
 
     return query.exec();
 }
 
 bool DatabaseManager::validateUser(const QString& username, const QString& password)
 {
-    QSqlQuery query(m_db);
-    query.prepare("SELECT COUNT(*) FROM users WHERE username = :username AND password = :password");
-    query.bindValue(":username", username);
-    query.bindValue(":password", password);
+    QSqlQuery query;
+    query.prepare("SELECT * FROM users WHERE username = :u AND password = :p");
+    query.bindValue(":u", username);
+    query.bindValue(":p", password);
 
-    if (!query.exec())
-        return false;
-
-    if (query.next())
-        return query.value(0).toInt() > 0;
-
-    return false;
+    query.exec();
+    return query.next();
 }
 
-bool DatabaseManager::addListing(const Listing& listing)
+bool DatabaseManager::updatePassword(const QString& username, const QString& currentPassword, const QString& newPassword)
 {
-    QSqlQuery query(m_db);
-    query.prepare(
-        "INSERT INTO listings (title, category, price, description, seller) "
-        "VALUES (:title, :category, :price, :description, :seller)"
-    );
+    QSqlQuery query;
+    query.prepare("UPDATE users SET password = :new WHERE username = :u AND password = :curr");
+    query.bindValue(":new", newPassword);
+    query.bindValue(":u", username);
+    query.bindValue(":curr", currentPassword);
 
-    query.bindValue(":title", listing.getTitle());
-    query.bindValue(":category", listing.getCategory());
-    query.bindValue(":price", listing.getPrice());
-    query.bindValue(":description", listing.getDescription());
-    query.bindValue(":seller", listing.getSeller());
-
-    return query.exec();
+    return query.exec() && query.numRowsAffected() > 0;
 }
 
-QVector<Listing> DatabaseManager::getAllListings() const
+void DatabaseManager::addListing(const Listing& listing)
 {
-    QVector<Listing> listings;
-    QSqlQuery query(m_db);
+    QSqlQuery query;
+    query.prepare("INSERT INTO listings VALUES (:t, :c, :p, :s)");
+    query.bindValue(":t", listing.getTitle());
+    query.bindValue(":c", listing.getCategory());
+    query.bindValue(":p", listing.getPrice());
+    query.bindValue(":s", listing.getSeller());
 
-    query.prepare("SELECT title, category, price, description, seller FROM listings");
+    query.exec();
+}
 
-    if (query.exec())
+QVector<Listing> DatabaseManager::getAllListings()
+{
+    QVector<Listing> list;
+    QSqlQuery query("SELECT * FROM listings");
+
+    while (query.next())
     {
-        while (query.next())
-        {
-            listings.append(Listing(
-                query.value(0).toString(),
-                query.value(1).toString(),
-                query.value(2).toDouble(),
-                query.value(3).toString(),
-                query.value(4).toString()
-            ));
-        }
+        list.append(Listing(
+            query.value(0).toString(),
+            query.value(1).toString(),
+            query.value(2).toDouble(),
+            query.value(3).toString()
+        ));
     }
 
-    return listings;
+    return list;
 }
 
-QVector<Listing> DatabaseManager::filterListings(const QString& searchText,
-                                                 const QString& category) const
+QVector<Listing> DatabaseManager::filterListings(const QString& search, const QString& category)
 {
-    QVector<Listing> listings;
-    QSqlQuery query(m_db);
+    QVector<Listing> list;
+    QSqlQuery query;
 
-    QString sql =
-        "SELECT title, category, price, description, seller "
-        "FROM listings "
-        "WHERE lower(title) LIKE lower(:search)";
+    QString sql = "SELECT * FROM listings WHERE title LIKE :search";
 
     if (category != "All")
-        sql += " AND category = :category";
+        sql += " AND category = :cat";
 
     query.prepare(sql);
-    query.bindValue(":search", "%" + searchText + "%");
+    query.bindValue(":search", "%" + search + "%");
 
     if (category != "All")
-        query.bindValue(":category", category);
+        query.bindValue(":cat", category);
 
-    if (query.exec())
+    query.exec();
+
+    while (query.next())
     {
-        while (query.next())
-        {
-            listings.append(Listing(
-                query.value(0).toString(),
-                query.value(1).toString(),
-                query.value(2).toDouble(),
-                query.value(3).toString(),
-                query.value(4).toString()
-            ));
-        }
+        list.append(Listing(
+            query.value(0).toString(),
+            query.value(1).toString(),
+            query.value(2).toDouble(),
+            query.value(3).toString()
+        ));
     }
 
-    return listings;
+    return list;
 }
