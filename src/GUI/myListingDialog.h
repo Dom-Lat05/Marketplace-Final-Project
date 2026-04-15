@@ -1,5 +1,5 @@
-#ifndef MYLISTINGDIALOGUE_H
-#define MYLISTINGDIALOGUE_H
+#ifndef MYLISTINGDIALOG_H
+#define MYLISTINGDIALOG_H
 
 #include <QDialog>
 #include <QVector>
@@ -8,16 +8,16 @@
 #include "databasemanager.h"
 
 namespace Ui {
-class MyListingDialogue;
+class MyListingDialog;
 }
 
-class MyListingDialogue : public QDialog
+class MyListingDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit MyListingDialogue(const User& user, DatabaseManager *db, QWidget *parent = nullptr);
-    ~MyListingDialogue();
+    explicit MyListingDialog(const User& user, DatabaseManager *db, QWidget *parent = nullptr);
+    ~MyListingDialog();
 
 private slots:
     void on_btnEdit_clicked();
@@ -27,10 +27,10 @@ private slots:
 private:
     void loadListings();
 
-    Ui::MyListingDialogue *ui;
+    Ui::MyListingDialog *ui;
     User m_user;
     DatabaseManager *m_db;
     QVector<Listing> m_listings;
 };
 
-#endif // MYLISTINGDIALOGUE_H
+#endif // MYLISTINGDIALOG_H
