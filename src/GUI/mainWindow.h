@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QListWidgetItem>
 #include "user.h"
 #include "marketplacemanager.h"
 
@@ -22,6 +23,7 @@ public:
 private slots:
     void on_btnFilter_clicked();
     void on_btnAdd_clicked();
+    void on_lstListings_itemClicked(QListWidgetItem *item);
 
 private:
     void displayListings(const QVector<Listing>& listings);
