@@ -1,19 +1,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "addlistingdialog.h"
+#include "logindialog.h"
 
 MainWindow::MainWindow(const User& user, DatabaseManager *db, QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-    , m_user(user)
-    , m_db(db)
+    : QMainWindow(parent), ui(new Ui::MainWindow), m_user(user), m_db(db)
 {
     ui->setupUi(this);
 
-    setWindowTitle("Marketplace - " + m_user.getUsername());
     ui->lblWelcome->setText("Welcome, " + m_user.getUsername());
-
-    ui->cmbCategory->clear();
     ui->cmbCategory->addItems({"All", "Electronics", "Furniture", "Clothing"});
 
     displayListings(m_db->getAllListings());
@@ -28,19 +23,16 @@ void MainWindow::displayListings(const QVector<Listing>& listings)
 {
     ui->lstListings->clear();
 
-    for (const Listing& listing : listings)
-    {
-        ui->lstListings->addItem(listing.toDisplayString());
-    }
+    for (const Listing& l : listings)
+        ui->lstListings->addItem(l.toDisplayString());
 }
 
 void MainWindow::on_btnFilter_clicked()
 {
-    QString search = ui->txtSearch->text();
-    QString category = ui->cmbCategory->currentText();
-
-    QVector<Listing> filtered = m_db->filterListings(search, category);
-    displayListings(filtered);
+    displayListings(m_db->filterListings(
+        ui->txtSearch->text(),
+        ui->cmbCategory->currentText()
+    ));
 }
 
 void MainWindow::on_btnAdd_clicked()
@@ -49,14 +41,22 @@ void MainWindow::on_btnAdd_clicked()
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        Listing listing = dialog.getListing();
-        m_db->addListing(listing);
-
-        QVector<Listing> filtered = m_db->filterListings(
-            ui->txtSearch->text(),
-            ui->cmbCategory->currentText()
-        );
-
-        displayListings(filtered);
+        m_db->addListing(dialog.getListing());
+        displayListings(m_db->getAllListings());
     }
+}
+
+void MainWindow::on_btnLogout_clicked()
+{
+    this->hide();
+
+    LoginDialog login(m_db);
+
+    if (login.exec() == QDialog::Accepted)
+    {
+        MainWindow *w = new MainWindow(login.getUser(), m_db);
+        w->show();
+    }
+
+    this->close();
 }
