@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "addlistingdialog.h"
 
 MainWindow::MainWindow(const User& user, QWidget *parent)
     : QMainWindow(parent)
@@ -12,9 +13,8 @@ MainWindow::MainWindow(const User& user, QWidget *parent)
 
     ui->cmbCategory->addItems({"All", "Electronics", "Furniture", "Clothing"});
 
-    ui->lstListings->addItem("Laptop | Electronics | $900");
-    ui->lstListings->addItem("Chair | Furniture | $120");
-    ui->lstListings->addItem("Hoodie | Clothing | $40");
+    m_manager.loadSampleListings();
+    displayListings(m_manager.getAllListings());
 }
 
 MainWindow::~MainWindow()
@@ -22,33 +22,39 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_btnFilter_clicked()
+void MainWindow::displayListings(const QVector<Listing>& listings)
 {
-    QString search = ui->txtSearch->text().toLower();
-    QString category = ui->cmbCategory->currentText();
-
     ui->lstListings->clear();
 
-    if ((category == "All" || category == "Electronics") &&
-        (search.isEmpty() || QString("Laptop").toLower().contains(search)))
+    for (const Listing& listing : listings)
     {
-        ui->lstListings->addItem("Laptop | Electronics | $900");
+        ui->lstListings->addItem(listing.toDisplayString());
     }
+}
 
-    if ((category == "All" || category == "Furniture") &&
-        (search.isEmpty() || QString("Chair").toLower().contains(search)))
-    {
-        ui->lstListings->addItem("Chair | Furniture | $120");
-    }
+void MainWindow::on_btnFilter_clicked()
+{
+    QString search = ui->txtSearch->text();
+    QString category = ui->cmbCategory->currentText();
 
-    if ((category == "All" || category == "Clothing") &&
-        (search.isEmpty() || QString("Hoodie").toLower().contains(search)))
-    {
-        ui->lstListings->addItem("Hoodie | Clothing | $40");
-    }
+    QVector<Listing> filtered = m_manager.filterListings(search, category);
+    displayListings(filtered);
 }
 
 void MainWindow::on_btnAdd_clicked()
 {
-    ui->lstListings->addItem("New Item | Electronics | $100");
+    AddListingDialog dialog(m_user, this);
+
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        Listing newListing = dialog.getListing();
+        m_manager.addListing(newListing);
+
+        QVector<Listing> filtered = m_manager.filterListings(
+            ui->txtSearch->text(),
+            ui->cmbCategory->currentText()
+        );
+
+        displayListings(filtered);
+    }
 }
