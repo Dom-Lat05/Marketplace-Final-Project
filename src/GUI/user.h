@@ -6,10 +6,11 @@
 class User
 {
 public:
-    User() {}
-    User(const QString& username) : m_username(username) {}
+    User();
+    User(const QString& username);
 
-    QString getUsername() const { return m_username; }
+    QString getUsername() const;
+    bool isValid() const;
 
 private:
     QString m_username;
