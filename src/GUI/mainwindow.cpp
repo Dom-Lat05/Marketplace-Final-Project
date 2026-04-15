@@ -2,19 +2,21 @@
 #include "ui_mainwindow.h"
 #include "addlistingdialog.h"
 
-MainWindow::MainWindow(const User& user, QWidget *parent)
+MainWindow::MainWindow(const User& user, DatabaseManager *db, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , m_user(user)
+    , m_db(db)
 {
     ui->setupUi(this);
 
     setWindowTitle("Marketplace - " + m_user.getUsername());
+    ui->lblWelcome->setText("Welcome, " + m_user.getUsername());
 
+    ui->cmbCategory->clear();
     ui->cmbCategory->addItems({"All", "Electronics", "Furniture", "Clothing"});
 
-    m_manager.loadSampleListings();
-    displayListings(m_manager.getAllListings());
+    displayListings(m_db->getAllListings());
 }
 
 MainWindow::~MainWindow()
@@ -37,7 +39,7 @@ void MainWindow::on_btnFilter_clicked()
     QString search = ui->txtSearch->text();
     QString category = ui->cmbCategory->currentText();
 
-    QVector<Listing> filtered = m_manager.filterListings(search, category);
+    QVector<Listing> filtered = m_db->filterListings(search, category);
     displayListings(filtered);
 }
 
@@ -47,10 +49,10 @@ void MainWindow::on_btnAdd_clicked()
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        Listing newListing = dialog.getListing();
-        m_manager.addListing(newListing);
+        Listing listing = dialog.getListing();
+        m_db->addListing(listing);
 
-        QVector<Listing> filtered = m_manager.filterListings(
+        QVector<Listing> filtered = m_db->filterListings(
             ui->txtSearch->text(),
             ui->cmbCategory->currentText()
         );
