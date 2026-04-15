@@ -21,6 +21,10 @@ public:
     QVector<Listing> getAllListings();
     QVector<Listing> filterListings(const QString& search, const QString& category);
 
+    QVector<Listing> getListingsBySeller(const QString& seller);
+    bool updateListing(int id, const QString& title, const QString& category, double price, const QString& description);
+    bool markListingSold(int id);
+
 private:
     QSqlDatabase m_db;
 };
