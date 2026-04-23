@@ -76,7 +76,8 @@ bool Listing::isSold() const
 
 QString Listing::toDisplayString() const
 {
-    QString soldText = m_sold ? " | SOLD" : "";
+    QString soldText = m_sold ? " [SOLD]" : "";
+
     return m_title + " | " + m_category + " | $" +
            QString::number(m_price, 'f', 2) +
            " | Seller: " + m_seller + soldText;
